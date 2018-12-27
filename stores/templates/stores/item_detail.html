@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h2>{{ item.name }}</h2>
+    <p>Rs: {{ item.price }}</p>
+
+    <a href="{% url 'stores:edit_item' store_pk=store_pk item_pk=item.id%}">
+        <button class="btn btn-lg btn-info">Edit Item</button>
+    </a>
+{% endblock %}

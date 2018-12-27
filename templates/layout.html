@@ -1,0 +1,14 @@
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'bootstarp/bootstrap.min.css' %}">
+    <title>E Market</title>
+</head>
+<body class="container-fluid">
+<nav class="navbar nav-tabs justify-content-center"><a href="{% url 'stores:all_stores' %}">STORES</a></nav>
+<br>
+{% block content %}{% endblock %}
+</body>
+</html>
