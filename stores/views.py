@@ -1,6 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
 
 from . import models
 from . import forms
@@ -53,3 +57,31 @@ def item_create(request, store_pk, item_pk=None):
             return HttpResponseRedirect(item.get_absolute_url())
 
     return render(request, 'stores/store_form.html', {'form': form, 'store': store})
+
+
+class StoreListView(ListView):
+    context_object_name = 'stores'
+    model = models.Store
+    template_name = 'stores/stores.html'
+
+
+class StoreDetailView(DetailView):
+    context_object_name = 'store'
+    model = models.Store
+    template_name = 'stores/store_detail.html'
+
+
+class CreateStoreView(CreateView):
+    model = models.Store
+    fields = ('name', 'location')
+
+
+class UpdateStoreView(UpdateView):
+    model = models.Store
+    fields = ('name', 'location')
+
+
+class DeleteStoreView(DeleteView):
+    model = models.Store
+    success_url = reverse_lazy('stores:all_stores')
+    template_name = 'stores/store_confirm_delete.html'

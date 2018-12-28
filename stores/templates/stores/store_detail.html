@@ -15,4 +15,7 @@
     <a href="{% url 'stores:add_item' store_pk=store.id %}">
         <button class="btn btn-lg btn-info">Add Item</button>
     </a>
+    <a href="{% url 'stores:delete_store' pk=store.id %}">
+        <button class="btn btn-lg btn-danger">Delete</button>
+    </a>
 {% endblock %}

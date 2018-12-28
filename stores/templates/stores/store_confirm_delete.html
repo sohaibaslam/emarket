@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+
+{%  block content %}
+    <form method="POST">
+        {% csrf_token %}
+        <input type="submit" value="DELETE" class="btn btn-danger">
+        <a href="{% url 'stores:all_stores' %}" class="btn btn-info">Cancel</a>
+    </form>
+{%  endblock %}
