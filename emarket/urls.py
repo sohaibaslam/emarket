@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home_view),
     re_path('^stores/', include('stores.urls', namespace='stores')),
+    re_path('^accounts/', include('accounts.urls', namespace='accounts')),
+    re_path('^accounts/', include('django.contrib.auth.urls')),
 ]

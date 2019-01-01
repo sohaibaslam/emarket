@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
@@ -23,21 +24,6 @@ def store_detail(request, pk):
 def item_detial(request, store_pk, item_pk):
     item = models.Item.objects.get(store_id=store_pk, pk=item_pk)
     return render(request, 'stores/item_detail.html', {'item': item, 'store_pk':store_pk})
-
-
-@login_required
-def store_create(request, pk=None):
-    store = get_object_or_404(models.Store, pk=pk) if pk else None
-    form = forms.StoreForm(instance=store) if store else forms.StoreForm()
-
-    if request.method == 'POST':
-        form = forms.StoreForm(request.POST, instance=store)
-
-        if form.is_valid():
-            store = form.save()
-            return HttpResponseRedirect(store.get_absolute_url())
-
-    return render(request, 'stores/store_form.html', {'form': form})
 
 
 @login_required
@@ -71,17 +57,17 @@ class StoreDetailView(DetailView):
     template_name = 'stores/store_detail.html'
 
 
-class CreateStoreView(CreateView):
+class CreateStoreView(LoginRequiredMixin, CreateView):
     model = models.Store
     fields = ('name', 'location')
 
 
-class UpdateStoreView(UpdateView):
+class UpdateStoreView(LoginRequiredMixin, UpdateView):
     model = models.Store
     fields = ('name', 'location')
 
 
-class DeleteStoreView(DeleteView):
+class DeleteStoreView(LoginRequiredMixin, DeleteView):
     model = models.Store
     success_url = reverse_lazy('stores:all_stores')
     template_name = 'stores/store_confirm_delete.html'
