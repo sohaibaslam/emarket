@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 
@@ -57,17 +57,50 @@ class StoreDetailView(DetailView):
     template_name = 'stores/store_detail.html'
 
 
+class AuthorizedUser(View):
+    def get(self, request, *args, **kwargs):
+
+        if self.is_authorized(**kwargs):
+            return super().get(request, *args, **kwargs)
+
+        raise PermissionError("User not authorized to perform this action")
+
+    def post(self, request, *args, **kwargs):
+
+        if self.is_authorized(**kwargs):
+            return super().post(request, *args, **kwargs)
+
+        raise PermissionError("User not authorized to perform this action")
+
+    def is_authorized(self, **kwargs):
+        store = self.get_model(**kwargs)
+        return store.user == self.request.user
+
+    def get_model(self, **kwargs):
+        pass
+
+
 class CreateStoreView(LoginRequiredMixin, CreateView):
     model = models.Store
     fields = ('name', 'location')
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-class UpdateStoreView(LoginRequiredMixin, UpdateView):
+
+class UpdateStoreView(LoginRequiredMixin, AuthorizedUser, UpdateView):
     model = models.Store
     fields = ('name', 'location')
 
+    def get_model(self, **kwargs):
+        return get_object_or_404(self.model, pk=kwargs['pk'])
 
-class DeleteStoreView(LoginRequiredMixin, DeleteView):
+
+class DeleteStoreView(LoginRequiredMixin, AuthorizedUser, DeleteView):
     model = models.Store
     success_url = reverse_lazy('stores:all_stores')
     template_name = 'stores/store_confirm_delete.html'
+
+    def get_model(self, **kwargs):
+        return get_object_or_404(self.model, pk=kwargs['pk'])

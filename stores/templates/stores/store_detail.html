@@ -9,13 +9,16 @@
             <li><a href="{{ item.get_absolute_url }}">{{ item.name }}</a></li>
         {% endfor %}
     </ul>
-    <a href="{% url 'stores:edit_store' pk=store.id %}">
-        <button class="btn btn-lg btn-info">Edit Store</button>
-    </a>
-    <a href="{% url 'stores:add_item' store_pk=store.id %}">
-        <button class="btn btn-lg btn-info">Add Item</button>
-    </a>
-    <a href="{% url 'stores:delete_store' pk=store.id %}">
-        <button class="btn btn-lg btn-danger">Delete</button>
-    </a>
+    <h1>Owner is {{ store.user }}</h1>
+    {% if user == store.user %}
+        <a href="{% url 'stores:edit_store' pk=store.id %}">
+            <button class="btn btn-lg btn-info">Edit Store</button>
+        </a>
+        <a href="{% url 'stores:add_item' store_pk=store.id %}">
+            <button class="btn btn-lg btn-info">Add Item</button>
+        </a>
+        <a href="{% url 'stores:delete_store' pk=store.id %}">
+            <button class="btn btn-lg btn-danger">Delete</button>
+        </a>
+    {% endif %}
 {% endblock %}
